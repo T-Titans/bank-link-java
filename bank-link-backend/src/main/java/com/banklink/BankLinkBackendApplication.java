@@ -1,4 +1,4 @@
-package com.banklink.bank_link_backend;
+package com.banklink;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

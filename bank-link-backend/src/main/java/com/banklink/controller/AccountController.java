@@ -7,50 +7,53 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/api/accounts")
-@CrossOrigin(origins = "http://localhost:63342")
+@CrossOrigin(origins = "http://127.0.0.1:5500")
 public class AccountController {
 
     @Autowired
     private AccountService accountService;
 
-    // A single GET endpoint to get all accounts for the user.
-    // This matches the fetchAccounts function in your script.js
     @GetMapping
     public ResponseEntity<Map<String, BankAccount>> getAllAccounts() {
-        // Since we are not handling users yet, we return all accounts from the mock database
         return ResponseEntity.ok(accountService.getAllAccounts());
     }
 
-    // Deposit endpoint - now accepts JSON body
+ // Deposit endpoint - now returns a JSON response
+    // Deposit endpoint
     @PostMapping("/deposit")
-    public ResponseEntity<String> deposit(@RequestBody Map<String, Object> request) {
+    public ResponseEntity<BankAccount> deposit(@RequestBody Map<String, Object> request) {
         String accountId = (String) request.get("accountId");
         double amount = ((Number) request.get("amount")).doubleValue();
 
         accountService.deposit(accountId, amount);
-        return ResponseEntity.ok("Deposit successful.");
+        return ResponseEntity.ok(accountService.getAccountById(accountId));
     }
 
-    // Withdraw endpoint - now accepts JSON body
+    // Withdraw endpoint
     @PostMapping("/withdraw")
-    public ResponseEntity<String> withdraw(@RequestBody Map<String, Object> request) {
+    public ResponseEntity<Object> withdraw(@RequestBody Map<String, Object> request) {
         String accountId = (String) request.get("accountId");
         double amount = ((Number) request.get("amount")).doubleValue();
 
         boolean success = accountService.withdraw(accountId, amount);
+        
         if (success) {
-            return ResponseEntity.ok("Withdrawal successful.");
+            return ResponseEntity.ok(accountService.getAccountById(accountId));
         }
-        return ResponseEntity.badRequest().body("Insufficient funds.");
+        
+        Map<String, String> errorResponse = new HashMap<>();
+        errorResponse.put("message", "Insufficient funds.");
+        return ResponseEntity.badRequest().body(errorResponse);
     }
 
-    // Transfer endpoint - already uses @RequestBody
+    // Transfer endpoint
     @PostMapping("/transfer")
-    public ResponseEntity<String> transfer(@RequestBody TransferRequest transferRequest) {
+    public ResponseEntity<Object> transfer(@RequestBody TransferRequest transferRequest) {
         boolean success = accountService.transfer(
                 transferRequest.getFromAccountId(),
                 transferRequest.getToAccountId(),
@@ -58,8 +61,14 @@ public class AccountController {
         );
 
         if (success) {
-            return ResponseEntity.ok("Transfer successful.");
+            Map<String, BankAccount> response = new HashMap<>();
+            response.put("fromAccount", accountService.getAccountById(transferRequest.getFromAccountId()));
+            response.put("toAccount", accountService.getAccountById(transferRequest.getToAccountId()));
+            return ResponseEntity.ok(response);
         }
-        return ResponseEntity.badRequest().body("Transfer failed. Check accounts and balance.");
+        
+        Map<String, String> errorResponse = new HashMap<>();
+        errorResponse.put("message", "Transfer failed. Check accounts and balance.");
+        return ResponseEntity.badRequest().body(errorResponse);
     }
 }

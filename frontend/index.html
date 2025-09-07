@@ -11,53 +11,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body>
-    <script>
-        // Check if user is logged in
-        if (!localStorage.getItem('isLoggedIn')) {
-            window.location.href = 'login.html';
-        }
-        
-        // Display user welcome message
-        document.addEventListener('DOMContentLoaded', function() {
-            const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
-            if (user.name) {
-                document.getElementById('customer-name').textContent = user.name;
-                document.getElementById('welcome-message').textContent = `Welcome back, ${user.name}!`;
-            }
-        });
-        
-        // Logout function
-        function logout() {
-            localStorage.removeItem('isLoggedIn');
-            localStorage.removeItem('currentUser');
-            window.location.href = 'login.html';
-        }
-    </script>
-
     <header>
         <div class="header-left">
-            <h1><i class="fas fa-landmark"></i> Bank-Link</h1>
-            <p id="welcome-message">Welcome to Bank-Link <span id="user-name"></span>!</p>
-    <script>
-        // Ask for the user's name
-        let username = prompt("Please enter your name:");
 
-        // Get the element
-        let welcomeMessage = document.getElementById("welcome-message");
-
-        // Update message (if user typed something)
-        if (username) {
-        welcomeMessage.textContent = "Welcome to Bank-Link " + username;
-
-        // Display user welcome message
-            document.addEventListener('DOMContentLoaded', function() {
-            const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
-             if (user.name) {
-            document.getElementById('user-name').textContent = user.name;
-    }
-});
-  }
-</script>
         </div>
         <button onclick="logout()" class="logout-btn">
             <i class="fas fa-sign-out-alt"></i> Logout
