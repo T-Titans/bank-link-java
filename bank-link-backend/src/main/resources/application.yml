@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: bank-link-backend
+  
+  # MariaDB Database Configuration
+  datasource:
+    url: jdbc:mariadb://localhost:3306/bank_link_db
+    username: vundla
+    password: Mv@20217$
+    driver-class-name: org.mariadb.jdbc.Driver
+    
+  # JPA/Hibernate Configuration
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MariaDBDialect
+        format_sql: true
+
+server:
+  port: 8080
+
+# CORS Configuration for frontend linking
+cors:
+  allowed-origins: http://localhost:3000,http://localhost:4200
+  allowed-methods: GET,POST,PUT,DELETE,OPTIONS
+  allowed-headers: "*"
+  allow-credentials: true

@@ -3,174 +3,473 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bank-Link - Dashboard</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- PDF Libraries -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <title>Bank-Link - Login</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #5c6479 0%, #ff8c42 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .auth-container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px;
+            position: relative;
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .logo h1 {
+            color: #333;
+            font-size: 2.5em;
+            font-weight: bold;
+        }
+        .logo span {
+            color: #ff6200;
+        }
+        .form-toggle {
+            display: flex;
+            margin-bottom: 30px;
+            background: #f0f0f0;
+            border-radius: 25px;
+            padding: 5px;
+        }
+        .toggle-btn {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            border: none;
+            background: transparent;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        .toggle-btn.active {
+            background: #ff6200;
+            color: white;
+        }
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #ff6200;
+            box-shadow: 0 0 0 3px rgba(255, 98, 0, 0.1);
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: #ff6200;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .submit-btn:hover {
+            background: #e55a00;
+            transform: translateY(-2px);
+        }
+        .submit-btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .form-container {
+            display: none;
+        }
+        .form-container.active {
+            display: block;
+        }
+        .error-message {
+            color: #dc3545;
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .success-message {
+            color: #155724;
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .loading {
+            position: relative;
+            color: transparent;
+        }
+        .loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            margin-left: -10px;
+            margin-top: -10px;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: button-loading-spinner 1s ease infinite;
+        }
+        @keyframes button-loading-spinner {
+            from {
+                transform: rotate(0turn);
+            }
+            to {
+                transform: rotate(1turn);
+            }
+        }
+        .form-footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+        .form-footer a {
+            color: #ff6200;
+            text-decoration: none;
+        }
+        .form-footer a:hover {
+            text-decoration: underline;
+        }
+        /* Project section styling */
+        #project-content {
+            display: none;
+            background: #fff;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 40px auto;
+            text-align: center;
+        }
+        #logout-btn {
+            margin-top: 30px;
+            padding: 12px 30px;
+            background: #ff6200;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        #logout-btn:hover {
+            background: #e55a00;
+        }
+    </style>
 </head>
 <body>
+    <div class="auth-container">
+        <div class="logo">
+            <h1>Bank<span>-Link</span></h1>
+        </div>
+        <div class="form-toggle">
+            <button class="toggle-btn active" onclick="showLogin()">Login</button>
+            <button class="toggle-btn" onclick="showRegister()">Register</button>
+        </div>
+        <!-- Login Form -->
+        <div id="login-container" class="form-container active">
+            <form id="login-form">
+                <div class="error-message" id="login-error"></div>
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="submit-btn" id="login-btn">Login</button>
+            </form>
+            <div class="form-footer">
+                <p>Don't have an account? <a href="#" onclick="showRegister()">Create one here</a></p>
+            </div>
+        </div>
+        <!-- Register Form -->
+        <div id="register-container" class="form-container">
+            <form id="register-form">
+                <div class="error-message" id="register-error"></div>
+                <div class="success-message" id="register-success"></div>
+                <div class="form-group">
+                    <label for="reg-name">First Name</label>
+                    <input type="text" id="reg-name" placeholder="Enter your first name" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-surname">Last Name</label>
+                    <input type="text" id="reg-surname" placeholder="Enter your last name" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-id">ID Number</label>
+                    <input type="text" id="reg-id" placeholder="Enter your 13-digit ID number" required maxlength="13" minlength="13">
+                </div>
+                <div class="form-group">
+                    <label for="reg-email">Email</label>
+                    <input type="email" id="reg-email" placeholder="Enter your email" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-password">Password</label>
+                    <input type="password" id="reg-password" placeholder="Create a password (min 6 characters)" required minlength="6">
+                </div>
+                <div class="form-group">
+                    <label for="reg-confirm-password">Confirm Password</label>
+                    <input type="password" id="reg-confirm-password" placeholder="Confirm your password" required>
+                </div>
+                <button type="submit" class="submit-btn" id="register-btn">Create Account</button>
+            </form>
+            <div class="form-footer">
+                <p>Already have an account? <a href="#" onclick="showLogin()">Login here</a></p>
+            </div>
+        </div>
+    </div>
+    <!-- Project content section (hidden by default) -->
+    <div id="project-content">
+        <h2>Welcome to your Bank-Link Project!</h2>
+        <div id="user-info"></div>
+        <button id="logout-btn" onclick="logout()">Logout</button>
+    </div>
     <script>
-        // Check if user is logged in
-        if (!localStorage.getItem('isLoggedIn')) {
-            window.location.href = 'login.html';
+        // API Base URL
+        const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:8088/api'
+            : 'https://bank-link-backend.onrender.com/api';
+
+        function showLogin() {
+            document.getElementById('login-container').classList.add('active');
+            document.getElementById('register-container').classList.remove('active');
+            document.querySelectorAll('.toggle-btn')[0].classList.add('active');
+            document.querySelectorAll('.toggle-btn')[1].classList.remove('active');
+            clearMessages();
         }
-        
-        // Display user welcome message
-        document.addEventListener('DOMContentLoaded', function() {
-            const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
-            if (user.name) {
-                document.getElementById('customer-name').textContent = user.name;
-                document.getElementById('welcome-message').textContent = `Welcome back, ${user.name}!`;
+        function showRegister() {
+            document.getElementById('register-container').classList.add('active');
+            document.getElementById('login-container').classList.remove('active');
+            document.querySelectorAll('.toggle-btn')[1].classList.add('active');
+            document.querySelectorAll('.toggle-btn')[0].classList.remove('active');
+            clearMessages();
+        }
+        function clearMessages() {
+            document.getElementById('login-error').style.display = 'none';
+            document.getElementById('register-error').style.display = 'none';
+            document.getElementById('register-success').style.display = 'none';
+        }
+        function showError(elementId, message) {
+            const errorElement = document.getElementById(elementId);
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+        }
+        function showSuccess(elementId, message) {
+            const successElement = document.getElementById(elementId);
+            successElement.textContent = message;
+            successElement.style.display = 'block';
+        }
+        function setLoadingState(buttonId, isLoading) {
+            const button = document.getElementById(buttonId);
+            if (isLoading) {
+                button.classList.add('loading');
+                button.disabled = true;
+            } else {
+                button.classList.remove('loading');
+                button.disabled = false;
+            }
+        }
+
+        // Login form handler (no redirect)
+        document.getElementById('login-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            clearMessages();
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+            if (!email || !password) {
+                showError('login-error', 'Please fill in all fields');
+                return;
+            }
+            setLoadingState('login-btn', true);
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                const result = await response.json();
+                if (result.success) {
+                    localStorage.setItem('isLoggedIn', 'true');
+                    localStorage.setItem('currentUser', JSON.stringify(result.user));
+                    showSuccess('login-error', 'Login successful!');
+                    // Hide auth container and show project content
+                    document.querySelector('.auth-container').style.display = 'none';
+                    document.getElementById('project-content').style.display = 'block';
+                    // Show user info
+                    document.getElementById('user-info').innerHTML = `
+                        <p><strong>Name:</strong> ${result.user.fullName || result.user.name || ''}</p>
+                        <p><strong>Email:</strong> ${result.user.email || ''}</p>
+                        <p><strong>ID Number:</strong> ${result.user.idNumber || ''}</p>
+                        <p><strong>Account Status:</strong> ${result.user.accountStatus || 'ACTIVE'}</p>
+                    `;
+                } else {
+                    showError('login-error', result.message || 'Login failed. Please check your credentials.');
+                }
+            } catch (error) {
+                showError('login-error', 'Connection error. Please check if the server is running and try again.');
+            } finally {
+                setLoadingState('login-btn', false);
             }
         });
-        
-        // Logout function
+
+        // Register form handler
+        document.getElementById('register-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            clearMessages();
+            const name = document.getElementById('reg-name').value.trim();
+            const surname = document.getElementById('reg-surname').value.trim();
+            const idNumber = document.getElementById('reg-id').value.trim();
+            const email = document.getElementById('reg-email').value.trim();
+            const password = document.getElementById('reg-password').value;
+            const confirmPassword = document.getElementById('reg-confirm-password').value;
+            if (!name || !surname || !idNumber || !email || !password || !confirmPassword) {
+                showError('register-error', 'Please fill in all fields');
+                return;
+            }
+            if (password !== confirmPassword) {
+                showError('register-error', 'Passwords do not match!');
+                return;
+            }
+            if (password.length < 6) {
+                showError('register-error', 'Password must be at least 6 characters long');
+                return;
+            }
+            if (idNumber.length !== 13 || !/^\d+$/.test(idNumber)) {
+                showError('register-error', 'Please enter a valid 13-digit ID number');
+                return;
+            }
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showError('register-error', 'Please enter a valid email address');
+                return;
+            }
+            setLoadingState('register-btn', true);
+            try {
+                const response = await fetch(`${API_BASE_URL}/auth/register`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        name: name,
+                        surname: surname,
+                        idNumber: idNumber,
+                        email: email,
+                        password: password
+                    })
+                });
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                const result = await response.json();
+                if (result.success) {
+                    showSuccess('register-success', 'Registration successful! You can now login.');
+                    document.getElementById('register-error').style.display = 'none';
+                    document.getElementById('register-form').reset();
+                    setTimeout(() => {
+                        showLogin();
+                        document.getElementById('login-email').value = email;
+                    }, 2000);
+                } else {
+                    showError('register-error', result.message || 'Registration failed. Please try again.');
+                }
+            } catch (error) {
+                if (error.message.includes('400')) {
+                    showError('register-error', 'Invalid data provided. Please check your information.');
+                } else if (error.message.includes('409')) {
+                    showError('register-error', 'Email or ID number already exists. Please use different credentials.');
+                } else if (error.message.includes('500')) {
+                    showError('register-error', 'Server error. Please try again later.');
+                } else {
+                    showError('register-error', 'Connection error. Please check if the server is running and try again.');
+                }
+            } finally {
+                setLoadingState('register-btn', false);
+            }
+        });
+
+        // Real-time validation for ID number
+        document.getElementById('reg-id').addEventListener('input', function(e) {
+            const value = e.target.value;
+            e.target.value = value.replace(/\D/g, '');
+        });
+        document.getElementById('reg-confirm-password').addEventListener('input', function(e) {
+            const password = document.getElementById('reg-password').value;
+            const confirmPassword = e.target.value;
+            if (confirmPassword && password !== confirmPassword) {
+                e.target.style.borderColor = '#dc3545';
+            } else {
+                e.target.style.borderColor = '';
+            }
+        });
+
+        // Logout function for project section
         function logout() {
             localStorage.removeItem('isLoggedIn');
             localStorage.removeItem('currentUser');
-            window.location.href = 'login.html';
+            // Hide project, show auth
+            document.getElementById('project-content').style.display = 'none';
+            document.querySelector('.auth-container').style.display = 'block';
+            showLogin();
         }
+
+        // Auto-show project if already logged in
+        window.addEventListener('DOMContentLoaded', function() {
+            if (localStorage.getItem('isLoggedIn') === 'true') {
+                document.querySelector('.auth-container').style.display = 'none';
+                document.getElementById('project-content').style.display = 'block';
+                const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+                document.getElementById('user-info').innerHTML = `
+                    <p><strong>Name:</strong> ${user.fullName || user.name || ''}</p>
+                    <p><strong>Email:</strong> ${user.email || ''}</p>
+                    <p><strong>ID Number:</strong> ${user.idNumber || ''}</p>
+                    <p><strong>Account Status:</strong> ${user.accountStatus || 'ACTIVE'}</p>
+                `;
+            }
+        });
     </script>
-
-    <header>
-        <div class="header-left">
-            <h1><i class="fas fa-landmark"></i> Bank-Link</h1>
-            <p id="welcome-message">Welcome to Bank-Link <span id="user-name"></span>!</p>
-     <script>
-        // Ask for the user's name
-          let username = prompt("Please enter your name:");
-
-        // Get the element
-        let welcomeMessage = document.getElementById("welcome-message");
-
-        // Update message (if user typed something)
-        if (username) {
-        welcomeMessage.textContent = "Welcome to Bank-Link " + username;
-
-        // Display user welcome message
-            document.addEventListener('DOMContentLoaded', function() {
-            const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
-             if (user.name) {
-            document.getElementById('user-name').textContent = user.name;
-    }
-});
-  }
-</script>
-        </div>
-        <button onclick="logout()" class="logout-btn">
-            <i class="fas fa-sign-out-alt"></i> Logout
-        </button>
-    </header>
-
-    <main>
-        <section class="dashboard">
-            <h2><i class="fas fa-wallet"></i> Your Accounts</h2>
-            <div class="account-cards">
-                <!-- Account Card 1 -->
-                <div class="account-card">
-                    <h3><i class="fas fa-credit-card"></i> Cheque Account</h3>
-                    <p class="account-number">ACC001</p>
-                    <p class="balance">Balance: <span id="balance-acc001">R1,000.00</span></p>
-                </div>
-                <!-- Account Card 2 -->
-                <div class="account-card">
-                    <h3><i class="fas fa-piggy-bank"></i> Savings Account</h3>
-                    <p class="account-number">SAV001</p>
-                    <p class="balance">Balance: <span id="balance-sav001">R1,000.00</span></p>
-                </div>
-            </div>
-        </section>
-
-        <section class="actions">
-            <h2><i class="fas fa-bolt"></i> Quick Actions</h2>
-            <div class="action-buttons">
-                <button onclick="showModal('deposit-modal')">
-                    <i class="fas fa-money-bill-wave"></i> Deposit
-                </button>
-                <button onclick="showModal('withdraw-modal')">
-                    <i class="fas fa-hand-holding-usd"></i> Withdraw
-                </button>
-                <button onclick="showModal('transfer-modal')">
-                    <i class="fas fa-exchange-alt"></i> Transfer
-                </button>
-            </div>
-        </section>
-
-        <section class="actions">
-            <h2><i class="fas fa-file-invoice-dollar"></i> Account Statements</h2>
-            <div class="action-buttons">
-                <select id="statement-account">
-                    <option value="ACC001">Cheque Account (ACC001)</option>
-                    <option value="SAV001">Savings Account (SAV001)</option>
-                </select>
-                <button id="download-statement">
-                    <i class="fas fa-download"></i> Download Statement (PDF)
-                </button>
-            </div>
-        </section>
-    </main>
-
-    <!-- Modals for Actions (Initially Hidden) -->
-    <div id="deposit-modal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('deposit-modal')">&times;</span>
-            <h3><i class="fas fa-money-bill-wave"></i> Deposit Money</h3>
-            <form id="deposit-form">
-                <label for="deposit-account">To Account:</label>
-                <select id="deposit-account" required>
-                    <option value="ACC001">Cheque Account (ACC001)</option>
-                    <option value="SAV001">Savings Account (SAV001)</option>
-                </select>
-                <label for="deposit-amount">Amount (R):</label>
-                <input type="number" id="deposit-amount" min="0.01" step="0.01" required>
-                <button type="submit"><i class="fas fa-check"></i> Confirm Deposit</button>
-            </form>
-        </div>
-    </div>
-
-    <div id="withdraw-modal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('withdraw-modal')">&times;</span>
-            <h3><i class="fas fa-hand-holding-usd"></i> Withdraw Money</h3>
-            <form id="withdraw-form">
-                <label for="withdraw-account">From Account:</label>
-                <select id="withdraw-account" required>
-                    <option value="ACC001">Cheque Account (ACC001)</option>
-                    <option value="SAV001">Savings Account (SAV001)</option>
-                </select>
-                <label for="withdraw-amount">Amount (R):</label>
-                <input type="number" id="withdraw-amount" min="0.01" step="0.01" required>
-                <button type="submit"><i class="fas fa-check"></i> Confirm Withdrawal</button>
-            </form>
-        </div>
-    </div>
-
-    <div id="transfer-modal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('transfer-modal')">&times;</span>
-            <h3><i class="fas fa-exchange-alt"></i> Transfer Money</h3>
-            <form id="transfer-form">
-                <label for="from-account">From Account:</label>
-                <select id="from-account" required>
-                    <option value="ACC001">Cheque Account (ACC001)</option>
-                    <option value="SAV001">Savings Account (SAV001)</option>
-                </select>
-                <label for="to-account">To Account:</label>
-                <input type="text" id="to-account" placeholder="Recipient Account Number" required>
-                <label for="transfer-amount">Amount (R):</label>
-                <input type="number" id="transfer-amount" min="0.01" step="0.01" required>
-                <button type="submit"><i class="fas fa-check"></i> Confirm Transfer</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Notification Toast -->
-    <div id="notification" class="toast hidden">
-        <p id="notification-message"></p>
-    </div>
-
-    <script src="script.js"></script>
 </body>
 </html>
