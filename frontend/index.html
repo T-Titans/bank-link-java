@@ -3,130 +3,269 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bank-Link - Dashboard</title>
+    <title>Bank-Link - Login</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- PDF Libraries -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        .auth-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #5c6479 0%, #ff8c42 100%);
+            padding: 20px;
+        }
+
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 0;
+            background: white;
+            border-radius: 10px 10px 0 0;
+            overflow: hidden;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 1rem;
+            text-align: center;
+            background: #c2d2e2;
+            cursor: pointer;
+            border: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .auth-tab.active {
+            background: rgb(72, 100, 112);
+            color: #c95c25;
+        }
+
+        .auth-form {
+            background: rgb(67, 77, 87);
+            padding: 2rem;
+            border-radius: 0 0 10px 10px;
+            box-shadow: 0 10px 25px rgba(84, 102, 119, 0.932);
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .auth-form h2 {
+            text-align: center;
+            color: #4a744d;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #443434;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+
+        .auth-btn {
+            display: block;
+            width: 100%;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .login-btn {
+            background-color: #27ae60;
+            color: white;
+        }
+
+        .login-btn:hover {
+            background-color: #219d55;
+        }
+
+        .auth-form p {
+            text-align: center;
+            margin-top: 1rem;
+            color: #ccc;
+        }
+
+        .auth-form a {
+            color: #2ecc71;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <div class="header-left">
-
-        </div>
-        <button onclick="logout()" class="logout-btn">
-            <i class="fas fa-sign-out-alt"></i> Logout
-        </button>
-    </header>
-
-    <main>
-        <section class="dashboard">
-            <h2><i class="fas fa-wallet"></i> Your Accounts</h2>
-            <div class="account-cards">
-                <!-- Account Card 1 -->
-                <div class="account-card">
-                    <h3><i class="fas fa-credit-card"></i> Cheque Account</h3>
-                    <p class="account-number">ACC001</p>
-                    <p class="balance">Balance: <span id="balance-acc001">R1,000.00</span></p>
-                </div>
-                <!-- Account Card 2 -->
-                <div class="account-card">
-                    <h3><i class="fas fa-piggy-bank"></i> Savings Account</h3>
-                    <p class="account-number">SAV001</p>
-                    <p class="balance">Balance: <span id="balance-sav001">R1,000.00</span></p>
-                </div>
+    <div class="auth-container">
+        <div>
+            <div class="auth-tabs">
+                <button class="auth-tab active" id="login-tab">Login</button>
+                <button class="auth-tab" id="register-tab">Register</button>
             </div>
-        </section>
-
-        <section class="actions">
-            <h2><i class="fas fa-bolt"></i> Quick Actions</h2>
-            <div class="action-buttons">
-                <button onclick="showModal('deposit-modal')">
-                    <i class="fas fa-money-bill-wave"></i> Deposit
-                </button>
-                <button onclick="showModal('withdraw-modal')">
-                    <i class="fas fa-hand-holding-usd"></i> Withdraw
-                </button>
-                <button onclick="showModal('transfer-modal')">
-                    <i class="fas fa-exchange-alt"></i> Transfer
-                </button>
+            <div class="auth-form" id="login-form-container">
+                <h2><i class="fas fa-lock"></i> Login</h2>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="login-username">Username</label>
+                        <input type="text" id="login-username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" required>
+                    </div>
+                    <button type="submit" class="auth-btn login-btn"><i class="fas fa-sign-in-alt"></i> Login</button>
+                </form>
+                <p>Don't have an account? <a href="#" id="show-register">Register</a></p>
             </div>
-        </section>
-
-        <section class="actions">
-            <h2><i class="fas fa-file-invoice-dollar"></i> Account Statements</h2>
-            <div class="action-buttons">
-                <select id="statement-account">
-                    <option value="ACC001">Cheque Account (ACC001)</option>
-                    <option value="SAV001">Savings Account (SAV001)</option>
-                </select>
-                <button id="download-statement">
-                    <i class="fas fa-download"></i> Download Statement (PDF)
-                </button>
+            
+            <div class="auth-form hidden" id="register-form-container">
+                <h2><i class="fas fa-user-plus"></i> Register</h2>
+                <form id="register-form">
+                    <div class="form-group">
+                        <label for="register-username">Username</label>
+                        <input type="text" id="register-username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password">Password</label>
+                        <input type="password" id="register-password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-confirm-password">Confirm Password</label>
+                        <input type="password" id="register-confirm-password" required>
+                    </div>
+                    <button type="submit" class="auth-btn register-btn"><i class="fas fa-user-plus"></i> Register</button>
+                </form>
+                <p>Already have an account? <a href="#" id="show-login">Login</a></p>
             </div>
-        </section>
-    </main>
-
-    <!-- Modals for Actions (Initially Hidden) -->
-    <div id="deposit-modal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('deposit-modal')">&times;</span>
-            <h3><i class="fas fa-money-bill-wave"></i> Deposit Money</h3>
-            <form id="deposit-form">
-                <label for="deposit-account">To Account:</label>
-                <select id="deposit-account" required>
-                    <option value="ACC001">Cheque Account (ACC001)</option>
-                    <option value="SAV001">Savings Account (SAV001)</option>
-                </select>
-                <label for="deposit-amount">Amount (R):</label>
-                <input type="number" id="deposit-amount" min="0.01" step="0.01" required>
-                <button type="submit"><i class="fas fa-check"></i> Confirm Deposit</button>
-            </form>
         </div>
     </div>
+    <script>
+        const loginTab = document.getElementById('login-tab');
+        const registerTab = document.getElementById('register-tab');
+        const loginFormContainer = document.getElementById('login-form-container');
+        const registerFormContainer = document.getElementById('register-form-container');
 
-    <div id="withdraw-modal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('withdraw-modal')">&times;</span>
-            <h3><i class="fas fa-hand-holding-usd"></i> Withdraw Money</h3>
-            <form id="withdraw-form">
-                <label for="withdraw-account">From Account:</label>
-                <select id="withdraw-account" required>
-                    <option value="ACC001">Cheque Account (ACC001)</option>
-                    <option value="SAV001">Savings Account (SAV001)</option>
-                </select>
-                <label for="withdraw-amount">Amount (R):</label>
-                <input type="number" id="withdraw-amount" min="0.01" step="0.01" required>
-                <button type="submit"><i class="fas fa-check"></i> Confirm Withdrawal</button>
-            </form>
-        </div>
-    </div>
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        const showRegisterLink = document.getElementById('show-register');
+        const showLoginLink = document.getElementById('show-login');
 
-    <div id="transfer-modal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal('transfer-modal')">&times;</span>
-            <h3><i class="fas fa-exchange-alt"></i> Transfer Money</h3>
-            <form id="transfer-form">
-                <label for="from-account">From Account:</label>
-                <select id="from-account" required>
-                    <option value="ACC001">Cheque Account (ACC001)</option>
-                    <option value="SAV001">Savings Account (SAV001)</option>
-                </select>
-                <label for="to-account">To Account:</label>
-                <input type="text" id="to-account" placeholder="Recipient Account Number" required>
-                <label for="transfer-amount">Amount (R):</label>
-                <input type="number" id="transfer-amount" min="0.01" step="0.01" required>
-                <button type="submit"><i class="fas fa-check"></i> Confirm Transfer</button>
-            </form>
-        </div>
-    </div>
+        // Check URL for tab to display
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('tab') === 'register') {
+            showRegisterForm();
+        }
 
-    <!-- Notification Toast -->
-    <div id="notification" class="toast hidden">
-        <p id="notification-message"></p>
-    </div>
+        // Event listeners for tab and link clicks
+        loginTab.addEventListener('click', showLoginForm);
+        registerTab.addEventListener('click', showRegisterForm);
+        showLoginLink.addEventListener('click', showLoginForm);
+        showRegisterLink.addEventListener('click', showRegisterForm);
 
-    <script src="script.js"></script>
+        function showLoginForm() {
+            loginFormContainer.classList.remove('hidden');
+            registerFormContainer.classList.add('hidden');
+            loginTab.classList.add('active');
+            registerTab.classList.remove('active');
+        }
+
+        function showRegisterForm() {
+            registerFormContainer.classList.remove('hidden');
+            loginFormContainer.classList.add('hidden');
+            registerTab.classList.add('active');
+            loginTab.classList.remove('active');
+        }
+
+        // Login form submission
+        loginForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+
+            let users = JSON.parse(localStorage.getItem('banklink_users')) || [];
+            const user = users.find(u => u.username === username && u.password === password);
+
+            if (user) {
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                window.location.href = 'main.html'; // Redirect to main.html
+            } else {
+                alert('Invalid username or password.');
+            }
+        });
+
+        // Registration form submission
+        registerForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const username = document.getElementById('register-username').value;
+            const password = document.getElementById('register-password').value;
+            const confirmPassword = document.getElementById('register-confirm-password').value;
+
+            if (password !== confirmPassword) {
+                alert('Passwords do not match.');
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem('banklink_users')) || [];
+            
+            // Check if user already exists
+            const userExists = users.some(u => u.username === username);
+            if (userExists) {
+                alert('Username already exists. Please choose a different one.');
+                return;
+            }
+
+            // Create new user object with sample data
+            const newUser = {
+                id: 'user_' + new Date().getTime(),
+                username: username,
+                password: password,
+                accounts: {
+                    "ACC001": { 
+                        name: "Cheque Account", 
+                        balance: 1000.00,
+                        transactions: [
+                            { date: new Date().toISOString().split('T')[0], type: "Opening Balance", amount: 1000.00, balance: 1000.00 }
+                        ]
+                    },
+                    "SAV001": { 
+                        name: "Savings Account", 
+                        balance: 1000.00,
+                        transactions: [
+                            { date: new Date().toISOString().split('T')[0], type: "Opening Balance", amount: 1000.00, balance: 1000.00 }
+                        ]
+                    }
+                },
+                createdAt: new Date().toISOString()
+            };
+            
+            // Save user
+            users.push(newUser);
+            localStorage.setItem('banklink_users', JSON.stringify(users));
+            
+            // Auto-login and redirect
+            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('currentUser', JSON.stringify(newUser));
+            window.location.href = 'main.html'; // Redirect to main.html
+        });
+    </script>
 </body>
 </html>
