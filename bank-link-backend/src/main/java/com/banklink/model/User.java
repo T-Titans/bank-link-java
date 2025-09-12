@@ -1,5 +1,6 @@
 package com.banklink.model;
 
+<<<<<<< HEAD
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -63,8 +64,29 @@ public class User {
         this.updatedAt = LocalDateTime.now();
         this.accountStatus = AccountStatus.ACTIVE;
     }
+=======
+import java.util.List;
+
+public class User {
+    private String id;
+    private String username;
+    private String password;
+    private List<BankAccount> accounts;
+>>>>>>> 0e97197142ef6d663d3926191b2578f0b5bf1739
+
+    // Constructors
+    public User() {
+    }
+
+    public User(String id, String username, String password, List<BankAccount> accounts) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.accounts = accounts;
+    }
 
     // Getters and Setters
+<<<<<<< HEAD
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -121,5 +143,37 @@ public class User {
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
         updateFullName();
+=======
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public List<BankAccount> getAccounts() {
+        return accounts;
+    }
+
+    public void setAccounts(List<BankAccount> accounts) {
+        this.accounts = accounts;
+>>>>>>> 0e97197142ef6d663d3926191b2578f0b5bf1739
     }
 }

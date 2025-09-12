@@ -1,5 +1,6 @@
 package com.banklink.controller;
 
+import com.banklink.dto.TransferRequest;
 import com.banklink.model.BankAccount;
 import com.banklink.model.Transaction;
 import com.banklink.service.AccountService;
@@ -8,17 +9,27 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+<<<<<<< HEAD
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/accounts")
 @CrossOrigin(origins = {"http://localhost:3000", "http://localhost:4200", "http://localhost:5173"})
+=======
+import java.util.HashMap;
+import java.util.Map;
+
+@RestController
+@RequestMapping("/api/accounts")
+@CrossOrigin
+>>>>>>> 0e97197142ef6d663d3926191b2578f0b5bf1739
 public class AccountController {
 
     @Autowired
     private AccountService accountService;
 
+<<<<<<< HEAD
     // Get all accounts
     @GetMapping
     public ResponseEntity<List<BankAccount>> getAllAccounts() {
@@ -71,9 +82,16 @@ public class AccountController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+=======
+    @GetMapping
+    public ResponseEntity<Map<String, BankAccount>> getAllAccounts() {
+        return ResponseEntity.ok(accountService.getAllAccounts());
+>>>>>>> 0e97197142ef6d663d3926191b2578f0b5bf1739
     }
 
+ // Deposit endpoint - now returns a JSON response
     // Deposit endpoint
+<<<<<<< HEAD
     @PostMapping("/{accountId}/deposit")
     public ResponseEntity<String> deposit(@PathVariable String accountId, @RequestParam double amount) {
         try {
@@ -99,10 +117,37 @@ public class AccountController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("An error occurred during withdrawal");
         }
+=======
+    @PostMapping("/deposit")
+    public ResponseEntity<BankAccount> deposit(@RequestBody Map<String, Object> request) {
+        String accountId = (String) request.get("accountId");
+        double amount = ((Number) request.get("amount")).doubleValue();
+
+        accountService.deposit(accountId, amount);
+        return ResponseEntity.ok(accountService.getAccountById(accountId));
+    }
+
+    // Withdraw endpoint
+    @PostMapping("/withdraw")
+    public ResponseEntity<Object> withdraw(@RequestBody Map<String, Object> request) {
+        String accountId = (String) request.get("accountId");
+        double amount = ((Number) request.get("amount")).doubleValue();
+
+        boolean success = accountService.withdraw(accountId, amount);
+        
+        if (success) {
+            return ResponseEntity.ok(accountService.getAccountById(accountId));
+        }
+        
+        Map<String, String> errorResponse = new HashMap<>();
+        errorResponse.put("message", "Insufficient funds.");
+        return ResponseEntity.badRequest().body(errorResponse);
+>>>>>>> 0e97197142ef6d663d3926191b2578f0b5bf1739
     }
 
     // Transfer endpoint
     @PostMapping("/transfer")
+<<<<<<< HEAD
     public ResponseEntity<String> transfer(
             @RequestParam String fromAccountId,
             @RequestParam String toAccountId,
@@ -147,5 +192,24 @@ public class AccountController {
     @GetMapping("/health")
     public ResponseEntity<String> healthCheck() {
         return ResponseEntity.ok("Account service is running");
+=======
+    public ResponseEntity<Object> transfer(@RequestBody TransferRequest transferRequest) {
+        boolean success = accountService.transfer(
+                transferRequest.getFromAccountId(),
+                transferRequest.getToAccountId(),
+                transferRequest.getAmount()
+        );
+
+        if (success) {
+            Map<String, BankAccount> response = new HashMap<>();
+            response.put("fromAccount", accountService.getAccountById(transferRequest.getFromAccountId()));
+            response.put("toAccount", accountService.getAccountById(transferRequest.getToAccountId()));
+            return ResponseEntity.ok(response);
+        }
+        
+        Map<String, String> errorResponse = new HashMap<>();
+        errorResponse.put("message", "Transfer failed. Check accounts and balance.");
+        return ResponseEntity.badRequest().body(errorResponse);
+>>>>>>> 0e97197142ef6d663d3926191b2578f0b5bf1739
     }
 }

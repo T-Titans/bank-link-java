@@ -8,14 +8,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+<<<<<<< HEAD
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+=======
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.ArrayList;
+>>>>>>> 0e97197142ef6d663d3926191b2578f0b5bf1739
 
 @Service
 @Transactional
 public class AccountService {
 
+<<<<<<< HEAD
     @Autowired
     private BankAccountRepository bankAccountRepository;
 
@@ -27,6 +35,23 @@ public class AccountService {
      */
     public Optional<BankAccount> getAccountById(String accountId) {
         return bankAccountRepository.findById(accountId);
+=======
+    private Map<String, BankAccount> accountDatabase = new HashMap<>();
+
+    public AccountService() {
+        List<Transaction> chequeTransactions = new ArrayList<>();
+        chequeTransactions.add(new Transaction("Opening Balance", 1000.00));
+        BankAccount cheque = new BankAccount("ACC001", "Cheque", 1000.00);
+        cheque.setTransactions(chequeTransactions);
+
+        List<Transaction> savingsTransactions = new ArrayList<>();
+        savingsTransactions.add(new Transaction("Opening Balance", 1000.00));
+        BankAccount savings = new BankAccount("SAV001", "Savings", 1000.00);
+        savings.setTransactions(savingsTransactions);
+
+        accountDatabase.put("ACC001", cheque);
+        accountDatabase.put("SAV001", savings);
+>>>>>>> 0e97197142ef6d663d3926191b2578f0b5bf1739
     }
 
     /**
@@ -36,6 +61,7 @@ public class AccountService {
         return bankAccountRepository.findAll();
     }
 
+<<<<<<< HEAD
     /**
      * Create a new bank account
      */
@@ -218,6 +244,26 @@ public class AccountService {
         Optional<BankAccount> accountOpt = getAccountById(accountId);
         if (accountOpt.isEmpty()) {
             throw new IllegalArgumentException("Account not found: " + accountId);
+=======
+    public Map<String, BankAccount> getAllAccounts() {
+        return accountDatabase;
+    }
+
+    public void deposit(String accountId, double amount) {
+        BankAccount account = getAccountById(accountId);
+        if (account != null && amount > 0) {
+            account.setBalance(account.getBalance() + amount);
+            account.getTransactions().add(new Transaction("Deposit", amount));
+        }
+    }
+
+    public boolean withdraw(String accountId, double amount) {
+        BankAccount account = getAccountById(accountId);
+        if (account != null && amount > 0 && account.getBalance() >= amount) {
+            account.setBalance(account.getBalance() - amount);
+            account.getTransactions().add(new Transaction("Withdrawal", amount));
+            return true;
+>>>>>>> 0e97197142ef6d663d3926191b2578f0b5bf1739
         }
         
         BankAccount account = accountOpt.get();
@@ -227,4 +273,37 @@ public class AccountService {
         
         bankAccountRepository.delete(account);
     }
+<<<<<<< HEAD
+=======
+
+    // New method for transfer logic
+    public boolean transfer(String fromAccountId, String toAccountId, double amount) {
+        // Check if accounts are valid and amount is positive
+        if (fromAccountId.equals(toAccountId) || amount <= 0) {
+            return false;
+        }
+
+        BankAccount fromAccount = getAccountById(fromAccountId);
+        BankAccount toAccount = getAccountById(toAccountId);
+
+        if (fromAccount == null || toAccount == null) {
+            return false;
+        }
+
+        // Check for sufficient funds
+        if (fromAccount.getBalance() < amount) {
+            return false;
+        }
+
+        // Perform the withdrawal and deposit
+        fromAccount.setBalance(fromAccount.getBalance() - amount);
+        toAccount.setBalance(toAccount.getBalance() + amount);
+
+        // Record a transaction for both accounts
+        fromAccount.getTransactions().add(new Transaction("Transfer to " + toAccountId, amount));
+        toAccount.getTransactions().add(new Transaction("Transfer from " + fromAccountId, amount));
+
+        return true;
+    }
+>>>>>>> 0e97197142ef6d663d3926191b2578f0b5bf1739
 }

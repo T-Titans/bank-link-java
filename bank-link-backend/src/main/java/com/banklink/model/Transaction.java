@@ -1,5 +1,6 @@
 package com.banklink.model;
 
+<<<<<<< HEAD
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -10,6 +11,10 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "transactions")
+=======
+import java.time.LocalDateTime;
+
+>>>>>>> 0e97197142ef6d663d3926191b2578f0b5bf1739
 public class Transaction {
 
     @Id
@@ -18,6 +23,7 @@ public class Transaction {
 
     @Column(name = "transaction_id", unique = true)
     private String transactionId;
+<<<<<<< HEAD
 
     @Column(name = "transaction_type", nullable = false)
     @NotBlank(message = "Transaction type is required")
@@ -85,6 +91,23 @@ public class Transaction {
         this.id = id;
     }
 
+=======
+    private String type;
+    private double amount;
+    private LocalDateTime date;
+
+    // Constructors, Getters, and Setters
+    public Transaction() {
+    }
+
+    public Transaction(String type, double amount) {
+        this.type = type;
+        this.amount = amount;
+        this.date = LocalDateTime.now();
+    }
+
+    // Getters and Setters
+>>>>>>> 0e97197142ef6d663d3926191b2578f0b5bf1739
     public String getTransactionId() {
         return transactionId;
     }
@@ -93,6 +116,7 @@ public class Transaction {
         this.transactionId = transactionId;
     }
 
+<<<<<<< HEAD
     public String getTransactionType() {
         return transactionType;
     }
@@ -273,5 +297,29 @@ public class Transaction {
     @Override
     public int hashCode() {
         return getClass().hashCode();
+=======
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
+
+    public LocalDateTime getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDateTime date) {
+        this.date = date;
+>>>>>>> 0e97197142ef6d663d3926191b2578f0b5bf1739
     }
 }

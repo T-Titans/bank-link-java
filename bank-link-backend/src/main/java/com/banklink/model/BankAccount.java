@@ -1,5 +1,6 @@
 package com.banklink.model;
 
+<<<<<<< HEAD
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -83,6 +84,25 @@ public class BankAccount {
         this(accountId, accountType);
         this.balance = initialBalance != null ? initialBalance : 0.0;
     }
+=======
+import java.util.List;
+
+public class BankAccount {
+    private String accountId;
+    private String type;
+    private double balance;
+    private List<Transaction> transactions;
+>>>>>>> 0e97197142ef6d663d3926191b2578f0b5bf1739
+
+    // Constructors
+    public BankAccount() {
+    }
+
+    public BankAccount(String accountId, String type, double balance) {
+        this.accountId = accountId;
+        this.type = type;
+        this.balance = balance;
+    }
 
     // Getters and Setters
     public String getAccountId() {
@@ -93,6 +113,7 @@ public class BankAccount {
         this.accountId = accountId;
     }
 
+<<<<<<< HEAD
     public String getAccountType() {
         return accountType;
     }
@@ -180,6 +201,22 @@ public class BankAccount {
 
     public void setUser(User user) {
         this.user = user;
+=======
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+
+    public void setBalance(double balance) {
+        this.balance = balance;
+>>>>>>> 0e97197142ef6d663d3926191b2578f0b5bf1739
     }
 
     public List<Transaction> getTransactions() {
@@ -189,6 +226,7 @@ public class BankAccount {
     public void setTransactions(List<Transaction> transactions) {
         this.transactions = transactions;
     }
+<<<<<<< HEAD
 
     // Utility Methods
     public String getFormattedBalance() {
@@ -291,4 +329,6 @@ public class BankAccount {
     public int hashCode() {
         return getClass().hashCode();
     }
+=======
+>>>>>>> 0e97197142ef6d663d3926191b2578f0b5bf1739
 }
