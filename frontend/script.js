@@ -13,7 +13,7 @@ async function fetchAccounts() {
     // You will need to pass an identifier like a user ID or a session token
     // For now, we assume the backend knows the logged-in user.
     try {
-        const response = await fetch(`${BASE_URL}/accounts`);
+        const response = await fetch(`${BASE_URL}`);
         if (!response.ok) {
             throw new Error('Failed to fetch accounts.');
         }
@@ -83,7 +83,7 @@ function setupEventListeners() {
         }
 
         try {
-            const response = await fetch(`${BASE_URL}/accounts/deposit`, {
+            const response = await fetch(`${BASE_URL}/deposit`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ accountId, amount })
@@ -120,7 +120,7 @@ function setupEventListeners() {
         }
 
         try {
-            const response = await fetch(`${BASE_URL}/accounts/withdraw`, {
+            const response = await fetch(`${BASE_URL}/withdraw`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ accountId, amount })
@@ -157,7 +157,7 @@ function setupEventListeners() {
         }
 
         try {
-            const response = await fetch(`${BASE_URL}/accounts/transfer`, {
+            const response = await fetch(`${BASE_URL}/transfer`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ fromAccountId, toAccountId, amount })
