@@ -1,4 +1,4 @@
-const API_BASE_URL = 'https://bank-link-backend.onrender.com/api/accounts';
+const BASE_URL = 'https://bank-link-backend.onrender.com/api/accounts';
 
 let accounts = {}; // Accounts will be loaded from the backend
 
